@@ -16,6 +16,7 @@ const customerSchema = new mongoose.Schema({
     status: { type: String, enum: ['Active', 'Inactive'], default: 'Active' },
     isDeleted: { type: Boolean, default: false },
     salesExecutive: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Customer', customerSchema);

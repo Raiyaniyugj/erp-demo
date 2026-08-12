@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import { Home, Users, Package, FileText, ShoppingCart, Receipt, CreditCard, LogOut, Activity, BarChart2 } from 'lucide-react';
+import { Home, Users, Package, FileText, ShoppingCart, Receipt, CreditCard, LogOut, Activity, BarChart2, User } from 'lucide-react';
 
 export default function Sidebar() {
     const { logout } = useAuth();
 
     const menuItems = [
         { name: 'Dashboard', path: '/dashboard', icon: <Home size={20} /> },
+        { name: 'Profile', path: '/profile', icon: <User size={20} /> },
         { name: 'Customers', path: '/customers', icon: <Users size={20} /> },
         { name: 'Products', path: '/products', icon: <Package size={20} /> },
         { name: 'Quotations', path: '/quotations', icon: <FileText size={20} /> },

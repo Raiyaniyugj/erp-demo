@@ -16,6 +16,7 @@ const orderSchema = new mongoose.Schema({
     paymentStatus: { type: String, enum: ['Pending', 'Partial', 'Paid'], default: 'Pending' },
     orderStatus: { type: String, enum: ['Pending', 'Processing', 'Packed', 'Dispatched', 'Delivered', 'Cancelled'], default: 'Pending' },
     grandTotal: { type: Number, required: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);

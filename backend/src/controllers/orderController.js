@@ -23,7 +23,8 @@ exports.createOrder = async (req, res) => {
             ...req.body,
             customer: quote.customer,
             products: quote.products,
-            grandTotal: quote.grandTotal
+            grandTotal: quote.grandTotal,
+            createdBy: req.user._id
         });
         
         const saved = await order.save();
@@ -35,7 +36,8 @@ exports.createOrder = async (req, res) => {
                 type: 'Stock Out',
                 quantity: item.quantity,
                 reference: saved._id,
-                remarks: 'Order Placed'
+                remarks: 'Order Placed',
+                createdBy: req.user._id
             });
         }
 
@@ -48,8 +50,8 @@ exports.createOrder = async (req, res) => {
 
 exports.updateOrderStatus = async (req, res) => {
     try {
-        const order = await Order.findById(req.params.id);
-        if (!order) return res.status(404).json({ message: 'Not found' });
+        const order = await Order.findOne({ _id: req.params.id, createdBy: req.user._id });
+        if (!order) return res.status(404).json({ message: 'Not found or unauthorized' });
 
         if (req.body.orderStatus === 'Cancelled' && order.orderStatus !== 'Cancelled') {
             for (let item of order.products) {
@@ -59,7 +61,8 @@ exports.updateOrderStatus = async (req, res) => {
                     type: 'Stock In',
                     quantity: item.quantity,
                     reference: order._id,
-                    remarks: 'Order Cancelled'
+                    remarks: 'Order Cancelled',
+                    createdBy: req.user._id
                 });
             }
         }
@@ -74,7 +77,7 @@ exports.updateOrderStatus = async (req, res) => {
 
 exports.getOrders = async (req, res) => {
     try {
-        const orders = await Order.find().populate('customer');
+        const orders = await Order.find({ createdBy: req.user._id }).populate('customer');
         res.json(orders);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -85,7 +88,7 @@ const { Parser } = require('json2csv');
 
 exports.exportOrders = async (req, res) => {
     try {
-        const orders = await Order.find().populate('customer', 'customerName companyName').lean();
+        const orders = await Order.find({ createdBy: req.user._id }).populate('customer', 'customerName companyName').lean();
         
         const formattedOrders = orders.map(order => ({
             orderNumber: order.orderNumber,

@@ -6,6 +6,7 @@ const inventorySchema = new mongoose.Schema({
     quantity: { type: Number, required: true },
     reference: { type: String },
     remarks: { type: String },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Inventory', inventorySchema);

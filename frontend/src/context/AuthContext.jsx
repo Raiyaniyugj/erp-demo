@@ -25,6 +25,9 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
+        // Clear any existing session before logging in as a different user
+        localStorage.removeItem('token');
+        delete API.defaults.headers.common['Authorization'];
         const { data } = await API.post('/auth/login', { email, password });
         localStorage.setItem('token', data.token);
         setUser(data);
@@ -37,6 +40,9 @@ export const AuthProvider = ({ children }) => {
     };
 
     const register = async (name, email, password) => {
+        // Clear any existing session before registering a new account
+        localStorage.removeItem('token');
+        delete API.defaults.headers.common['Authorization'];
         const { data } = await API.post('/auth/register', { name, email, password });
         localStorage.setItem('token', data.token);
         setUser(data);
@@ -44,6 +50,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem('token');
+        delete API.defaults.headers.common['Authorization'];
         setUser(null);
     };
 

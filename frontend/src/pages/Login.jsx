@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { GoogleLogin } from '@react-oauth/google';
 
@@ -10,8 +10,13 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { login, register, googleLogin } = useAuth();
+    const { user, login, register, googleLogin } = useAuth();
     const navigate = useNavigate();
+
+    // If user is already logged in, redirect to dashboard
+    if (user) {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();

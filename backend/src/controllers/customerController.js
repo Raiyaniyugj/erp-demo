@@ -5,10 +5,7 @@ const Invoice = require('../models/Invoice');
 
 exports.getCustomers = async (req, res) => {
     try {
-        let query = { isDeleted: false };
-        if (req.user.role === 'Sales Executive') {
-            query.salesExecutive = req.user._id;
-        }
+        let query = { isDeleted: false, createdBy: req.user._id };
         
         if (req.query.search) {
             query.$or = [
@@ -28,12 +25,9 @@ exports.getCustomers = async (req, res) => {
 
 exports.getCustomer = async (req, res) => {
     try {
-        const customer = await Customer.findById(req.params.id).populate('salesExecutive', 'name email');
+        const customer = await Customer.findOne({ _id: req.params.id, createdBy: req.user._id }).populate('salesExecutive', 'name email');
         if (!customer || customer.isDeleted) return res.status(404).json({ message: 'Customer not found' });
         
-        if (req.user.role === 'Sales Executive' && customer.salesExecutive._id.toString() !== req.user._id.toString()) {
-            return res.status(403).json({ message: 'Not authorized to view this customer' });
-        }
         res.json(customer);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -46,7 +40,8 @@ exports.createCustomer = async (req, res) => {
     try {
         const customer = new Customer({
             ...req.body,
-            salesExecutive: req.user.role === 'Sales Executive' ? req.user._id : req.body.salesExecutive
+            salesExecutive: req.user.role === 'Sales Executive' ? req.user._id : req.body.salesExecutive,
+            createdBy: req.user._id
         });
         const savedCustomer = await customer.save();
         await logActivity(req.user._id, 'CREATE', 'Customer', `Created customer ${savedCustomer.customerName}`);
@@ -58,12 +53,8 @@ exports.createCustomer = async (req, res) => {
 
 exports.updateCustomer = async (req, res) => {
     try {
-        const customer = await Customer.findById(req.params.id);
-        if (!customer) return res.status(404).json({ message: 'Customer not found' });
-
-        if (req.user.role === 'Sales Executive' && customer.salesExecutive.toString() !== req.user._id.toString()) {
-            return res.status(403).json({ message: 'Not authorized to update this customer' });
-        }
+        const customer = await Customer.findOne({ _id: req.params.id, createdBy: req.user._id });
+        if (!customer) return res.status(404).json({ message: 'Customer not found or not authorized' });
 
         const updatedCustomer = await Customer.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedCustomer);
@@ -74,8 +65,8 @@ exports.updateCustomer = async (req, res) => {
 
 exports.deleteCustomer = async (req, res) => {
     try {
-        const customer = await Customer.findById(req.params.id);
-        if (!customer) return res.status(404).json({ message: 'Customer not found' });
+        const customer = await Customer.findOne({ _id: req.params.id, createdBy: req.user._id });
+        if (!customer) return res.status(404).json({ message: 'Customer not found or not authorized' });
 
         const quotes = await Quotation.findOne({ customer: req.params.id });
         const orders = await Order.findOne({ customer: req.params.id });
@@ -99,7 +90,7 @@ const fs = require('fs');
 
 exports.exportCustomers = async (req, res) => {
     try {
-        const customers = await Customer.find({ isDeleted: false }).lean();
+        const customers = await Customer.find({ isDeleted: false, createdBy: req.user._id }).lean();
         const fields = ['customerName', 'companyName', 'email', 'phoneNumber', 'address', 'city', 'state', 'pincode', 'creditLimit'];
         const json2csvParser = new Parser({ fields });
         const csvData = json2csvParser.parse(customers);
@@ -125,6 +116,7 @@ exports.importCustomers = async (req, res) => {
                 const formatted = results.map(row => ({
                     ...row,
                     salesExecutive: req.user._id,
+                    createdBy: req.user._id,
                     creditLimit: row.creditLimit || 0
                 }));
                 await Customer.insertMany(formatted);

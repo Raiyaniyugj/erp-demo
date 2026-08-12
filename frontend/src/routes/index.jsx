@@ -12,6 +12,8 @@ import Payments from '../pages/Payments';
 import ActivityTimeline from '../pages/ActivityTimeline';
 import Reports from '../pages/Reports';
 
+import Profile from '../pages/Profile';
+
 function ProtectedRoute({ children, allowedRoles }) {
     const { user, loading } = useAuth();
     if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">Loading...</div>;
@@ -27,6 +29,7 @@ const Wrap = ({ children }) => (
 const routes = [
     { path: '/login', element: <Login /> },
     { path: '/dashboard', element: <Wrap><Dashboard /></Wrap> },
+    { path: '/profile', element: <Wrap><Profile /></Wrap> },
     { path: '/customers', element: <Wrap><Customers /></Wrap> },
     { path: '/products', element: <Wrap><Products /></Wrap> },
     { path: '/quotations', element: <Wrap><Quotations /></Wrap> },

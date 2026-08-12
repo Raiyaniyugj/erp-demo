@@ -34,8 +34,8 @@ exports.createQuotation = async (req, res) => {
 
 exports.updateQuotation = async (req, res) => {
     try {
-        const quotation = await Quotation.findById(req.params.id);
-        if (!quotation) return res.status(404).json({ message: 'Not found' });
+        const quotation = await Quotation.findOne({ _id: req.params.id, createdBy: req.user._id });
+        if (!quotation) return res.status(404).json({ message: 'Not found or unauthorized' });
         
         if (quotation.status === 'Approved') {
             return res.status(400).json({ message: 'Approved quotation cannot be edited' });
@@ -47,7 +47,7 @@ exports.updateQuotation = async (req, res) => {
             return res.status(400).json({ message: 'Quotation has expired and cannot be edited' });
         }
 
-        const updated = await Quotation.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updated = await Quotation.findOneAndUpdate({ _id: req.params.id, createdBy: req.user._id }, req.body, { new: true });
         res.json(updated);
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -56,8 +56,8 @@ exports.updateQuotation = async (req, res) => {
 
 exports.approveQuotation = async (req, res) => {
     try {
-        const quotation = await Quotation.findById(req.params.id);
-        if (!quotation) return res.status(404).json({ message: 'Not found' });
+        const quotation = await Quotation.findOne({ _id: req.params.id, createdBy: req.user._id });
+        if (!quotation) return res.status(404).json({ message: 'Not found or unauthorized' });
 
         quotation.status = 'Approved';
         await quotation.save();
@@ -70,7 +70,7 @@ exports.approveQuotation = async (req, res) => {
 
 exports.getQuotations = async (req, res) => {
     try {
-        const quotes = await Quotation.find().populate('customer');
+        const quotes = await Quotation.find({ createdBy: req.user._id }).populate('customer');
         res.json(quotes);
     } catch (error) {
         res.status(500).json({ message: error.message });

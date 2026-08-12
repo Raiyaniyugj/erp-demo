@@ -94,6 +94,7 @@ const registerUser = async (req, res) => {
             res.status(400).json({ message: 'Invalid user data' });
         }
     } catch (error) {
+        console.error('Registration Error:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
@@ -189,4 +190,36 @@ const getProfile = async (req, res) => {
     }
 };
 
-module.exports = { loginUser, registerUser, getProfile, refreshToken, logoutUser, googleLogin };
+const updateProfile = async (req, res) => {
+    try {
+        if (req.user._id.toString() === DEMO_ADMIN_ID.toString()) {
+            return res.status(403).json({ message: 'Demo Admin profile cannot be updated' });
+        }
+        
+        const user = await User.findById(req.user._id);
+
+        if (user) {
+            user.name = req.body.name || user.name;
+            
+            if (req.body.password) {
+                user.password = req.body.password;
+            }
+
+            const updatedUser = await user.save();
+            
+            res.json({
+                _id: updatedUser._id,
+                name: updatedUser.name,
+                email: updatedUser.email,
+                role: updatedUser.role,
+                token: generateToken(updatedUser._id)
+            });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+module.exports = { loginUser, registerUser, getProfile, refreshToken, logoutUser, googleLogin, updateProfile };

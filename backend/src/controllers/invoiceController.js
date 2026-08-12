@@ -8,7 +8,7 @@ exports.createInvoice = async (req, res) => {
         const order = await Order.findById(req.body.order);
         if (!order) return res.status(404).json({ message: 'Order not found' });
 
-        const existing = await Invoice.findOne({ order: req.body.order });
+        const existing = await Invoice.findOne({ order: req.body.order, createdBy: req.user._id });
         if (existing) {
             return res.status(400).json({ message: 'Invoice already exists for this order.' });
         }
@@ -18,7 +18,8 @@ exports.createInvoice = async (req, res) => {
             customer: order.customer,
             subTotal: order.grandTotal,
             gst: 0,
-            grandTotal: order.grandTotal
+            grandTotal: order.grandTotal,
+            createdBy: req.user._id
         });
 
         const saved = await invoice.save();
@@ -30,7 +31,7 @@ exports.createInvoice = async (req, res) => {
 
 exports.getInvoices = async (req, res) => {
     try {
-        const invoices = await Invoice.find().populate('customer').populate('order');
+        const invoices = await Invoice.find({ createdBy: req.user._id }).populate('customer').populate('order');
         res.json(invoices);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -39,7 +40,7 @@ exports.getInvoices = async (req, res) => {
 
 exports.generatePDF = async (req, res) => {
     try {
-        const invoice = await Invoice.findById(req.params.id)
+        const invoice = await Invoice.findOne({ _id: req.params.id, createdBy: req.user._id })
             .populate('customer')
             .populate({
                 path: 'order',
@@ -99,7 +100,7 @@ exports.generatePDF = async (req, res) => {
 
 exports.emailInvoice = async (req, res) => {
     try {
-        const invoice = await Invoice.findById(req.params.id).populate('customer');
+        const invoice = await Invoice.findOne({ _id: req.params.id, createdBy: req.user._id }).populate('customer');
         if (!invoice) return res.status(404).json({ message: 'Invoice not found' });
         if (!invoice.customer.email) return res.status(400).json({ message: 'Customer has no email address' });
 

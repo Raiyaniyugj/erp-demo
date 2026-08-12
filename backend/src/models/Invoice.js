@@ -10,6 +10,7 @@ const invoiceSchema = new mongoose.Schema({
     discount: { type: Number, default: 0 },
     gst: { type: Number, required: true },
     grandTotal: { type: Number, required: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Invoice', invoiceSchema);

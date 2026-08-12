@@ -8,6 +8,7 @@ const paymentSchema = new mongoose.Schema({
     paymentMode: { type: String, enum: ['Cash', 'UPI', 'Bank Transfer', 'Cheque'], required: true },
     transactionReference: { type: String },
     remarks: { type: String },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Payment', paymentSchema);
