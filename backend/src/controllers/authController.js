@@ -2,11 +2,11 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '15m' }); // Short-lived access token
+    return jwt.sign({ id }, process.env.JWT_SECRET || 'supersecret123', { expiresIn: '15m' }); // Short-lived access token
 };
 
 const generateRefreshToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' }); // Long-lived refresh token
+    return jwt.sign({ id }, process.env.JWT_SECRET || 'supersecret123', { expiresIn: '7d' }); // Long-lived refresh token
 };
 
 const loginUser = async (req, res) => {
@@ -82,7 +82,7 @@ const refreshToken = async (req, res) => {
         const token = req.cookies.refreshToken;
         if (!token) return res.status(401).json({ message: 'No refresh token provided' });
 
-        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        jwt.verify(token, process.env.JWT_SECRET || 'supersecret123', (err, decoded) => {
             if (err) return res.status(403).json({ message: 'Invalid refresh token' });
             
             const newAccessToken = generateToken(decoded.id);
