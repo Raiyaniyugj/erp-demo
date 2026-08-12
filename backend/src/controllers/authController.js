@@ -1,5 +1,9 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+
+// A stable, valid ObjectId for the demo admin bypass
+const DEMO_ADMIN_ID = new mongoose.Types.ObjectId('000000000000000000000001');
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET || 'supersecret123', { expiresIn: '15m' }); // Short-lived access token
@@ -15,8 +19,8 @@ const loginUser = async (req, res) => {
         
         // Demo Bypass for Admin
         if (email === 'admin@demo.com' && password === 'admin123') {
-            const token = generateToken('demo-admin-id');
-            const refreshToken = generateRefreshToken('demo-admin-id');
+            const token = generateToken(DEMO_ADMIN_ID);
+            const refreshToken = generateRefreshToken(DEMO_ADMIN_ID);
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
@@ -24,7 +28,7 @@ const loginUser = async (req, res) => {
                 maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
             });
             return res.json({
-                _id: 'demo-admin-id',
+                _id: DEMO_ADMIN_ID,
                 name: 'Admin User',
                 email: 'admin@demo.com',
                 role: 'Super Admin',
@@ -171,7 +175,7 @@ const logoutUser = (req, res) => {
 
 const getProfile = async (req, res) => {
     try {
-        if (req.user._id === 'demo-admin-id') {
+        if (req.user._id.toString() === DEMO_ADMIN_ID.toString()) {
             return res.json(req.user);
         }
         const user = await User.findById(req.user._id).select('-password');

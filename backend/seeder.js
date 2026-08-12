@@ -6,10 +6,10 @@ const Product = require('./src/models/Product');
 const connectDB = require('./src/config/db');
 
 dotenv.config();
-connectDB();
 
 const importData = async () => {
     try {
+        await connectDB();
         await User.deleteMany();
         await Customer.deleteMany();
         await Product.deleteMany();

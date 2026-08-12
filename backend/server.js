@@ -19,21 +19,9 @@ dotenv.config();
 
 const app = express();
 
-// Health check - no DB needed
-app.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// Ensure DB is connected before handling any requests
-app.use(async (req, res, next) => {
-    try {
-        await connectDB();
-        next();
-    } catch (err) {
-        console.error('DB connection failed:', err.message);
-        res.status(503).json({ message: 'Database unavailable', error: err.message });
-    }
-});
+// =============================================
+// 1. CORS - MUST be first (before everything)
+// =============================================
 const allowedOrigins = [
     'http://localhost:5174',
     'http://localhost:5173',
@@ -43,7 +31,6 @@ const allowedOrigins = [
 ];
 app.use(cors({ 
     origin: function (origin, callback) {
-        // Allow requests with no origin (Postman, server-to-server, etc)
         if (!origin) return callback(null, true);
         const allowed = allowedOrigins.some(o =>
             typeof o === 'string' ? o === origin : o.test(origin)
@@ -56,16 +43,48 @@ app.use(cors({
     }, 
     credentials: true 
 }));
+
+// =============================================
+// 2. Body parsers & cookie parser
+// =============================================
 app.use(express.json());
 app.use(cookieParser());
 
-// Request Logger
+// =============================================
+// 3. Request Logger
+// =============================================
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next();
 });
 
-// Routes
+// =============================================
+// 4. Health checks - no DB needed
+// =============================================
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.get('/', (req, res) => {
+    res.json({ message: 'Universal ERP API is running...', timestamp: new Date().toISOString() });
+});
+
+// =============================================
+// 5. DB connection middleware (after CORS)
+// =============================================
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        console.error('DB connection failed:', err.message);
+        res.status(503).json({ message: 'Database unavailable', error: err.message });
+    }
+});
+
+// =============================================
+// 6. API Routes (require DB)
+// =============================================
 app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/products', productRoutes);
@@ -76,10 +95,6 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/activities', activityRoutes);
-
-app.get('/', (req, res) => {
-    res.json({ message: 'Universal ERP API is running...', timestamp: new Date().toISOString() });
-});
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', db: 'connected', timestamp: new Date().toISOString() });
