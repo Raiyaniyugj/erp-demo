@@ -14,7 +14,8 @@ exports.createOrder = async (req, res) => {
         }
 
         const customer = await Customer.findById(quote.customer);
-        if (customer.outstandingAmount + quote.grandTotal > customer.creditLimit) {
+        // Only enforce credit limit if one is actually set (> 0)
+        if (customer.creditLimit > 0 && (customer.outstandingAmount + quote.grandTotal > customer.creditLimit)) {
             return res.status(400).json({ message: 'Customer credit limit exceeded. Cannot create order.' });
         }
 
