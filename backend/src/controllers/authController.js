@@ -12,6 +12,26 @@ const generateRefreshToken = (id) => {
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
+        
+        // Demo Bypass for Admin
+        if (email === 'admin@demo.com' && password === 'admin123') {
+            const token = generateToken('demo-admin-id');
+            const refreshToken = generateRefreshToken('demo-admin-id');
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+            return res.json({
+                _id: 'demo-admin-id',
+                name: 'Admin User',
+                email: 'admin@demo.com',
+                role: 'Super Admin',
+                token
+            });
+        }
+
         const user = await User.findOne({ email });
 
         if (user && (await user.matchPassword(password))) {
@@ -150,11 +170,18 @@ const logoutUser = (req, res) => {
 };
 
 const getProfile = async (req, res) => {
-    const user = await User.findById(req.user._id).select('-password');
-    if (user) {
-        res.json(user);
-    } else {
-        res.status(404).json({ message: 'User not found' });
+    try {
+        if (req.user._id === 'demo-admin-id') {
+            return res.json(req.user);
+        }
+        const user = await User.findById(req.user._id).select('-password');
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
