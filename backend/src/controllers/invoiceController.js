@@ -61,10 +61,12 @@ exports.generatePDF = async (req, res) => {
 
         // Customer Info
         doc.fontSize(14).text('Bill To:', { underline: true });
-        doc.fontSize(12).text(invoice.customer.customerName);
+        doc.fontSize(12).text(invoice.customer.customerName || 'N/A');
         if (invoice.customer.companyName) doc.text(invoice.customer.companyName);
-        doc.text(invoice.customer.address);
-        doc.text(`${invoice.customer.city}, ${invoice.customer.state} ${invoice.customer.pincode}`).moveDown();
+        if (invoice.customer.address) doc.text(invoice.customer.address);
+        const cityLine = [invoice.customer.city, invoice.customer.state, invoice.customer.pincode].filter(Boolean).join(', ');
+        if (cityLine) doc.text(cityLine);
+        doc.moveDown();
 
         // Items
         doc.fontSize(14).text('Items:', { underline: true }).moveDown();

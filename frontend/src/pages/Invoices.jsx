@@ -56,7 +56,22 @@ export default function Invoices() {
                                         <td className="px-4 py-3 text-slate-300">{new Date(inv.invoiceDate).toLocaleDateString()}</td>
                                         <td className="px-4 py-3 text-slate-300">{new Date(inv.dueDate).toLocaleDateString()}</td>
                                         <td className="px-4 py-3 flex gap-2">
-                                            <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5001/api'}/invoices/${inv._id}/pdf`} target="_blank" rel="noreferrer" className="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded hover:bg-purple-500/30 transition">Download PDF</a>
+                                            <button onClick={async () => {
+                                                try {
+                                                    const res = await API.get(`/invoices/${inv._id}/pdf`, { responseType: 'blob' });
+                                                    const blob = new Blob([res.data], { type: 'application/pdf' });
+                                                    const url = window.URL.createObjectURL(blob);
+                                                    const a = document.createElement('a');
+                                                    a.href = url;
+                                                    a.download = `invoice-${inv.invoiceNumber}.pdf`;
+                                                    document.body.appendChild(a);
+                                                    a.click();
+                                                    a.remove();
+                                                    window.URL.revokeObjectURL(url);
+                                                } catch (err) {
+                                                    alert('Failed to download PDF');
+                                                }
+                                            }} className="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded hover:bg-purple-500/30 transition cursor-pointer">Download PDF</button>
                                             <button onClick={async () => {
                                                 try {
                                                     await API.post(`/invoices/${inv._id}/email`);
