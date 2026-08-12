@@ -1,0 +1,46 @@
+{
+  "info": {
+    "name": "Universal ERP API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:5001/api/auth/login",
+            "body": { "mode": "raw", "raw": "{\"email\":\"admin@erp.com\",\"password\":\"password123\"}" }
+          }
+        },
+        {
+          "name": "Profile",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:5001/api/auth/profile"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Get Customers",
+          "request": { "method": "GET", "url": "http://localhost:5001/api/customers" }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get Products",
+          "request": { "method": "GET", "url": "http://localhost:5001/api/products" }
+        }
+      ]
+    }
+  ]
+}
