@@ -1,18 +1,38 @@
 const mongoose = require('mongoose');
 
-let isConnected = false;
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 const connectDB = async () => {
-    if (isConnected) {
-        return;
+    if (cached.conn) {
+        return cached.conn;
     }
-    try {
+
+    if (!cached.promise) {
         const uri = process.env.MONGODB_URI || 'mongodb+srv://universal-erp:jRWzGbLY4qh6qk4m@cluster0.klxk7yc.mongodb.net/universal-erp';
-        const db = await mongoose.connect(uri);
-        isConnected = db.connections[0].readyState === 1;
-        console.log(`MongoDB Connected: ${db.connection.host}`);
-    } catch (error) {
-        console.error(`MongoDB Connection Error: ${error.message}`);
+        
+        cached.promise = mongoose.connect(uri, {
+            bufferCommands: false
+        }).then((mongoose) => {
+            console.log(`MongoDB Connected: ${mongoose.connection.host}`);
+            return mongoose;
+        }).catch(err => {
+            console.error(`MongoDB Connection Error: ${err.message}`);
+            throw err;
+        });
     }
+
+    try {
+        cached.conn = await cached.promise;
+    } catch (e) {
+        cached.promise = null;
+        throw e;
+    }
+
+    return cached.conn;
 };
+
 module.exports = connectDB;
