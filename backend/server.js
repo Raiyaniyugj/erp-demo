@@ -39,9 +39,11 @@ const allowedOrigins = [
     'http://localhost:5173',
     'https://universal-erp-5457.web.app',
     /^https:\/\/erp-demo.*\.vercel\.app$/,
+    /^https:\/\/.+\.vercel\.app$/,
 ];
 app.use(cors({ 
     origin: function (origin, callback) {
+        // Allow requests with no origin (Postman, server-to-server, etc)
         if (!origin) return callback(null, true);
         const allowed = allowedOrigins.some(o =>
             typeof o === 'string' ? o === origin : o.test(origin)
@@ -49,7 +51,7 @@ app.use(cors({
         if (allowed) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            callback(new Error('Not allowed by CORS: ' + origin));
         }
     }, 
     credentials: true 
@@ -76,7 +78,11 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/activities', activityRoutes);
 
 app.get('/', (req, res) => {
-    res.send('Universal ERP API is running...');
+    res.json({ message: 'Universal ERP API is running...', timestamp: new Date().toISOString() });
+});
+
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', db: 'connected', timestamp: new Date().toISOString() });
 });
 
 const PORT = process.env.PORT || 5001;
