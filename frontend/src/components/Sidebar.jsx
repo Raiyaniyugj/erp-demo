@@ -8,7 +8,6 @@ export default function Sidebar() {
 
     const menuItems = [
         { name: 'Dashboard', path: '/dashboard', icon: <Home size={20} /> },
-        { name: 'Profile', path: '/profile', icon: <User size={20} /> },
         { name: 'Customers', path: '/customers', icon: <Users size={20} /> },
         { name: 'Products', path: '/products', icon: <Package size={20} /> },
         { name: 'Quotations', path: '/quotations', icon: <FileText size={20} /> },
