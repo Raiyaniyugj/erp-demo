@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: '/tmp' });
 const { createCustomer, getCustomers, getCustomer, updateCustomer, deleteCustomer, exportCustomers, importCustomers } = require('../controllers/customerController');
 const { protect } = require('../middlewares/authMiddleware');
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: '/tmp' });
 const { createProduct, getProducts, updateProduct, deleteProduct, exportProducts, importProducts } = require('../controllers/productController');
 const { protect, authorize } = require('../middlewares/authMiddleware');
 
