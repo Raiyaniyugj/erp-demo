@@ -99,8 +99,15 @@ const registerUser = async (req, res) => {
     }
 };
 
-const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const { getApps, initializeApp } = require('firebase-admin/app');
+const { getAuth: getAdminAuth } = require('firebase-admin/auth');
+
+// Initialize Firebase Admin (uses Application Default Credentials or service account)
+if (!getApps().length) {
+    initializeApp({
+        projectId: 'universal-erp-5457'
+    });
+}
 
 const refreshToken = async (req, res) => {
     try {
@@ -121,22 +128,20 @@ const refreshToken = async (req, res) => {
 const googleLogin = async (req, res) => {
     try {
         const { credential } = req.body;
-        const ticket = await client.verifyIdToken({
-            idToken: credential,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
-        const payload = ticket.getPayload();
-        const { email, name, sub: googleId } = payload;
+        
+        // Verify the Firebase ID token
+        const decodedToken = await getAdminAuth().verifyIdToken(credential);
+        const { email, name, uid: googleId } = decodedToken;
 
         let user = await User.findOne({ email });
 
         if (!user) {
             user = await User.create({
-                name,
+                name: name || email.split('@')[0],
                 email,
                 googleId,
                 authProvider: 'google',
-                role: 'Sales Executive'
+                role: 'Super Admin'
             });
         } else {
             if (!user.googleId) {
