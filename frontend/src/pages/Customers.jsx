@@ -59,8 +59,20 @@ export default function Customers() {
 
     const fileInputRef = useRef(null);
 
-    const handleExport = () => {
-        window.open(`${import.meta.env.VITE_API_URL || 'http://localhost:5001/api'}/customers/export`, '_blank');
+    const handleExport = async () => {
+        try {
+            const res = await API.get('/customers/export', { responseType: 'blob' });
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'customers.csv');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error('Export failed:', error);
+            toast.error('Failed to export CSV');
+        }
     };
 
     const handleImport = async (e) => {

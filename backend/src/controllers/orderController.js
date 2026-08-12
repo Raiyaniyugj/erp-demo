@@ -79,3 +79,31 @@ exports.getOrders = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+const { Parser } = require('json2csv');
+
+exports.exportOrders = async (req, res) => {
+    try {
+        const orders = await Order.find().populate('customer', 'customerName companyName').lean();
+        
+        const formattedOrders = orders.map(order => ({
+            orderNumber: order.orderNumber,
+            customerName: order.customer?.customerName || 'N/A',
+            companyName: order.customer?.companyName || 'N/A',
+            orderDate: new Date(order.createdAt).toLocaleDateString(),
+            grandTotal: order.grandTotal,
+            orderStatus: order.orderStatus,
+            paymentStatus: order.paymentStatus
+        }));
+
+        const fields = ['orderNumber', 'customerName', 'companyName', 'orderDate', 'grandTotal', 'orderStatus', 'paymentStatus'];
+        const json2csvParser = new Parser({ fields });
+        const csvData = json2csvParser.parse(formattedOrders);
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment('orders.csv');
+        return res.send(csvData);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
