@@ -5,19 +5,25 @@ import { motion } from 'framer-motion';
 import { GoogleLogin } from '@react-oauth/google';
 
 export default function Login() {
+    const [isLogin, setIsLogin] = useState(true);
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { login, googleLogin } = useAuth();
+    const { login, register, googleLogin } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(email, password);
+            if (isLogin) {
+                await login(email, password);
+            } else {
+                await register(name, email, password);
+            }
             navigate('/dashboard');
         } catch (err) {
-            setError(err.response?.data?.message || 'Login failed');
+            setError(err.response?.data?.message || (isLogin ? 'Login failed' : 'Registration failed'));
         }
     };
 
@@ -50,7 +56,7 @@ export default function Login() {
                 transition={{ duration: 1.5, ease: "easeInOut" }}
                 className="relative z-10 bg-white/10 backdrop-blur-lg border border-white/20 p-8 rounded-2xl shadow-2xl w-full max-w-md"
             >
-                <h2 className="text-3xl font-bold text-white mb-6 text-center">ERP</h2>
+                <h2 className="text-3xl font-bold text-white mb-6 text-center">{isLogin ? 'Sign In' : 'Sign Up'}</h2>
                 
                 {error && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-red-500/20 border border-red-500 text-red-100 p-3 rounded mb-4 text-sm text-center">
@@ -59,6 +65,18 @@ export default function Login() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {!isLogin && (
+                        <div>
+                            <label className="block text-slate-300 text-sm font-medium mb-1">Name</label>
+                            <input 
+                                type="text" 
+                                className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white transition-all"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                            />
+                        </div>
+                    )}
                     <div>
                         <label className="block text-slate-300 text-sm font-medium mb-1">Email</label>
                         <input 
@@ -85,9 +103,19 @@ export default function Login() {
                         type="submit" 
                         className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:shadow-purple-500/25 transition-all mt-4"
                     >
-                        Sign In
+                        {isLogin ? 'Sign In' : 'Sign Up'}
                     </motion.button>
                 </form>
+
+                <div className="mt-4 text-center text-sm text-slate-400">
+                    {isLogin ? "Don't have an account? " : "Already have an account? "}
+                    <button 
+                        onClick={() => { setIsLogin(!isLogin); setError(''); }} 
+                        className="text-purple-400 hover:text-purple-300 font-medium"
+                    >
+                        {isLogin ? 'Sign Up' : 'Sign In'}
+                    </button>
+                </div>
 
                 <div className="mt-6">
                     <div className="relative">
