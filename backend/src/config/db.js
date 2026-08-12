@@ -6,8 +6,8 @@ const connectDB = async () => {
         const conn = await mongoose.connect(uri);
         console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
-        console.error(`Error: ${error.message}`);
-        process.exit(1);
+        console.error(`MongoDB Connection Error: ${error.message}`);
+        // Do not process.exit(1) here so serverless function can still serve the demo login bypass
     }
 };
 module.exports = connectDB;
