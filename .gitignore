@@ -102,3 +102,10 @@ desktop.ini
 *.p12
 .vercel
 .netlify
+
+# ========================
+# User Uploads & Generated Docs
+# ========================
+uploads/
+temp/
+*.pdf
