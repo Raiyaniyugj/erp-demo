@@ -19,10 +19,20 @@ dotenv.config();
 
 const app = express();
 
+// Health check - no DB needed
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // Ensure DB is connected before handling any requests
 app.use(async (req, res, next) => {
-    await connectDB();
-    next();
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        console.error('DB connection failed:', err.message);
+        res.status(503).json({ message: 'Database unavailable', error: err.message });
+    }
 });
 const allowedOrigins = [
     'http://localhost:5174',
