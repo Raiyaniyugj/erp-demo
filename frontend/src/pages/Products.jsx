@@ -60,7 +60,7 @@ export default function Products() {
     const fileInputRef = useRef(null);
 
     const handleExport = () => {
-        window.open('http://localhost:5001/api/products/export', '_blank');
+        window.open(`${import.meta.env.VITE_API_URL || 'http://localhost:5001/api'}/products/export`, '_blank');
     };
 
     const handleImport = async (e) => {

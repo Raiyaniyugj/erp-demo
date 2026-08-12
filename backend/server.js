@@ -19,10 +19,19 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const allowedOrigins = ['http://localhost:5174', 'https://universal-erp-5457.web.app'];
+const allowedOrigins = [
+    'http://localhost:5174',
+    'http://localhost:5173',
+    'https://universal-erp-5457.web.app',
+    /^https:\/\/erp-demo.*\.vercel\.app$/,
+];
 app.use(cors({ 
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        if (!origin) return callback(null, true);
+        const allowed = allowedOrigins.some(o =>
+            typeof o === 'string' ? o === origin : o.test(origin)
+        );
+        if (allowed) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));

@@ -56,7 +56,7 @@ export default function Invoices() {
                                         <td className="px-4 py-3 text-slate-300">{new Date(inv.invoiceDate).toLocaleDateString()}</td>
                                         <td className="px-4 py-3 text-slate-300">{new Date(inv.dueDate).toLocaleDateString()}</td>
                                         <td className="px-4 py-3 flex gap-2">
-                                            <a href={`http://localhost:5001/api/invoices/${inv._id}/pdf`} target="_blank" rel="noreferrer" className="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded hover:bg-purple-500/30 transition">Download PDF</a>
+                                            <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:5001/api'}/invoices/${inv._id}/pdf`} target="_blank" rel="noreferrer" className="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded hover:bg-purple-500/30 transition">Download PDF</a>
                                             <button onClick={async () => {
                                                 try {
                                                     await API.post(`/invoices/${inv._id}/email`);
