@@ -16,9 +16,14 @@ const activityRoutes = require('./src/routes/activityRoutes');
 const cookieParser = require('cookie-parser');
 
 dotenv.config();
-connectDB();
 
 const app = express();
+
+// Ensure DB is connected before handling any requests
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
+});
 const allowedOrigins = [
     'http://localhost:5174',
     'http://localhost:5173',
