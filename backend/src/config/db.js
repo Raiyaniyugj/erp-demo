@@ -13,7 +13,7 @@ const connectDB = async () => {
 
     if (!cached.promise) {
         let uri = process.env.MONGODB_URI || 'mongodb+srv://raiyaniyug5457_db_user:ehv9iMefjVk7GD7B@ac-tyizkfz.klxk7yc.mongodb.net/universal-erp?retryWrites=true&w=majority';
-        if (uri.includes('directConnection=true')) {
+        if (process.env.NODE_ENV === 'production' && uri.includes('directConnection=true')) {
             uri = 'mongodb+srv://raiyaniyug5457_db_user:ehv9iMefjVk7GD7B@ac-tyizkfz.klxk7yc.mongodb.net/universal-erp?retryWrites=true&w=majority';
         }
         
