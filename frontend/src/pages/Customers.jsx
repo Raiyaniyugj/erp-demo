@@ -93,7 +93,7 @@ export default function Customers() {
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-3xl font-bold text-white">Customers</motion.h1>
+                <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-3xl font-bold text-gray-800">Customers</motion.h1>
                 <div className="flex gap-3">
                     <input type="file" accept=".csv" ref={fileInputRef} onChange={handleImport} className="hidden" />
                     <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 bg-slate-700 text-white px-4 py-2 rounded-xl font-semibold hover:bg-slate-600 transition">
@@ -109,34 +109,34 @@ export default function Customers() {
             </div>
 
             <div className="relative mb-6">
-                <Search className="absolute left-3 top-3 text-slate-400" size={18} />
-                <input type="text" placeholder="Search customers..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all" />
+                <Search className="absolute left-3 top-3 text-gray-400" size={18} />
+                <input type="text" placeholder="Search customers..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-3 bg-white border border-elite-border shadow-sm rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-elite-info transition-all" />
             </div>
 
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-lg border border-elite-border shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-slate-900/50">
+                        <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
                                 {['Name', 'Company', 'Phone', 'Type', 'Credit Limit', 'Outstanding', 'Status', 'Actions'].map(h => (
-                                    <th key={h} className="px-4 py-3 text-slate-400 text-sm font-semibold">{h}</th>
+                                    <th key={h} className="px-4 py-3 text-gray-500 text-sm font-semibold">{h}</th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody>
                             <AnimatePresence>
                                 {customers.map((c, i) => (
-                                    <motion.tr key={c._id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.05 }} className="border-t border-slate-700/50 hover:bg-slate-700/30 transition-colors">
-                                        <td className="px-4 py-3 text-white font-medium">{c.customerName}</td>
-                                        <td className="px-4 py-3 text-slate-300">{c.companyName}</td>
-                                        <td className="px-4 py-3 text-slate-300">{c.phoneNumber}</td>
-                                        <td className="px-4 py-3"><span className={`px-2 py-1 rounded-full text-xs font-bold ${c.customerType === 'B2B' ? 'bg-blue-500/20 text-blue-300' : 'bg-green-500/20 text-green-300'}`}>{c.customerType}</span></td>
-                                        <td className="px-4 py-3 text-slate-300">{formatCurrency(c.creditLimit)}</td>
-                                        <td className="px-4 py-3"><span className={c.outstandingAmount > 0 ? 'text-red-400 font-bold' : 'text-green-400'}>{formatCurrency(c.outstandingAmount)}</span></td>
+                                    <motion.tr key={c._id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.05 }} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                        <td className="px-4 py-3 text-gray-800 font-medium">{c.customerName}</td>
+                                        <td className="px-4 py-3 text-gray-600">{c.companyName}</td>
+                                        <td className="px-4 py-3 text-gray-600">{c.phoneNumber}</td>
+                                        <td className="px-4 py-3"><span className={`px-2 py-1 rounded-full text-xs font-bold ${c.customerType === 'B2B' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>{c.customerType}</span></td>
+                                        <td className="px-4 py-3 text-gray-600">{formatCurrency(c.creditLimit)}</td>
+                                        <td className="px-4 py-3"><span className={c.outstandingAmount > 0 ? 'text-red-500 font-bold' : 'text-green-600'}>{formatCurrency(c.outstandingAmount)}</span></td>
                                         <td className="px-4 py-3"><span className={`px-2 py-1 rounded-full text-xs font-bold ${getStatusColor(c.status)}`}>{c.status}</span></td>
                                         <td className="px-4 py-3 flex gap-2">
-                                            <motion.button whileHover={{ scale: 1.2 }} onClick={() => handleEdit(c)} className="text-blue-400 hover:text-blue-300"><Edit size={16} /></motion.button>
-                                            <motion.button whileHover={{ scale: 1.2 }} onClick={() => handleDelete(c._id)} className="text-red-400 hover:text-red-300"><Trash2 size={16} /></motion.button>
+                                            <motion.button whileHover={{ scale: 1.2 }} onClick={() => handleEdit(c)} className="text-blue-500 hover:text-blue-600"><Edit size={16} /></motion.button>
+                                            <motion.button whileHover={{ scale: 1.2 }} onClick={() => handleDelete(c._id)} className="text-red-500 hover:text-red-600"><Trash2 size={16} /></motion.button>
                                         </td>
                                     </motion.tr>
                                 ))}
@@ -144,7 +144,7 @@ export default function Customers() {
                         </tbody>
                     </table>
                 </div>
-                {customers.length === 0 && <p className="text-center text-slate-500 py-8">No customers found.</p>}
+                {customers.length === 0 && <p className="text-center text-gray-500 py-8">No customers found.</p>}
             </motion.div>
 
             <AnimatePresence>

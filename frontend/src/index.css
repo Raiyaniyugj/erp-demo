@@ -1,73 +1,9 @@
 @import "tailwindcss";
 
-@theme {
-  --color-background: #0a0a0a;
-  --color-foreground: #ffffff;
-  --color-muted: #262626;
-  --color-muted-foreground: #a3a3a3;
-  --color-border: #262626;
-}
-
 body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+  background-color: #f2f7f8;
+  color: #212529;
   font-family: ui-sans-serif, system-ui, sans-serif;
   margin: 0;
   min-height: 100vh;
-  overflow-x: hidden;
 }
-
-/* Landing Page Specific Utilities */
-.chamfered-button {
-  --cut: 12px;
-  clip-path: polygon(
-    var(--cut) 0, 
-    100% 0, 
-    100% calc(100% - var(--cut)), 
-    calc(100% - var(--cut)) 100%, 
-    0 100%, 
-    0 var(--cut)
-  );
-}
-
-.chamfered-border {
-  --cut: 12px;
-  clip-path: polygon(
-    var(--cut) 0, 
-    100% 0, 
-    100% calc(100% - var(--cut)), 
-    calc(100% - var(--cut)) 100%, 
-    0 100%, 
-    0 var(--cut)
-  );
-  padding: 1px;
-  background-color: var(--color-border);
-}
-
-.corner-plus {
-  position: relative;
-}
-
-.corner-plus::before, .corner-plus::after {
-  content: '';
-  position: absolute;
-  background-color: var(--color-muted-foreground);
-}
-
-.corner-plus-tl::before { top: -4px; left: 0; width: 1px; height: 9px; }
-.corner-plus-tl::after { top: 0; left: -4px; width: 9px; height: 1px; }
-
-.corner-plus-tr::before { top: -4px; right: 0; width: 1px; height: 9px; }
-.corner-plus-tr::after { top: 0; right: -4px; width: 9px; height: 1px; }
-
-.corner-plus-bl::before { bottom: -4px; left: 0; width: 1px; height: 9px; }
-.corner-plus-bl::after { bottom: 0; left: -4px; width: 9px; height: 1px; }
-
-.corner-plus-br::before { bottom: -4px; right: 0; width: 1px; height: 9px; }
-.corner-plus-br::after { bottom: 0; right: -4px; width: 9px; height: 1px; }
-
-html.lenis { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto; }
-.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-.lenis.lenis-stopped { overflow: hidden; }
-.lenis.lenis-scrolling iframe { pointer-events: none; }
