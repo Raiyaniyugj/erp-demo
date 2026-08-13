@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5001/api'),
+    baseURL: import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://erp-demoback.vercel.app/api' : 'http://localhost:5001/api'),
     withCredentials: true
 });
 
@@ -20,7 +20,7 @@ API.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
-                const baseUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5001/api');
+                const baseUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://erp-demoback.vercel.app/api' : 'http://localhost:5001/api');
                 const res = await axios.post(`${baseUrl}/auth/refresh`, {}, { withCredentials: true });
                 localStorage.setItem('token', res.data.token);
                 API.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
