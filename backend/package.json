@@ -4,7 +4,7 @@
   "description": "Backend for Universal ERP",
   "main": "index.js",
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   },
   "scripts": {
     "start": "node server.js",
@@ -22,7 +22,8 @@
     "csv-parser": "^3.2.1",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "firebase-admin": "^12.7.0",
+    "firebase-admin": "^14.2.0",
+    "firebase-functions": "^7.3.2",
     "google-auth-library": "^11.0.1",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.3",
