@@ -12,7 +12,7 @@ const connectDB = async () => {
     }
 
     if (!cached.promise) {
-        const uri = process.env.MONGODB_URI || 'mongodb://raiyaniyug5457_db_user:ehv9iMefjVk7GD7B@ac-tyizkfz-shard-00-00.klxk7yc.mongodb.net:27017/universal-erp?tls=true&authSource=admin&directConnection=true';
+        const uri = process.env.MONGODB_URI || 'mongodb+srv://raiyaniyug5457_db_user:ehv9iMefjVk7GD7B@ac-tyizkfz.klxk7yc.mongodb.net/universal-erp?retryWrites=true&w=majority';
         
         cached.promise = mongoose.connect(uri, {
             bufferCommands: false
