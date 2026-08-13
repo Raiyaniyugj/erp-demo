@@ -12,15 +12,15 @@ const StatCard = ({ icon, label, value, color, delay }) => (
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, ease: "easeOut", delay }}
-        whileHover={{ scale: 1.04, boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}
-        className="bg-white p-6 rounded-lg border border-elite-border relative overflow-hidden shadow-sm"
+        whileHover={{ scale: 1.04, boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
+        className="bg-slate-800/80 backdrop-blur-sm p-6 rounded-2xl border border-slate-700/50 relative overflow-hidden"
     >
-        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-10 ${color}`} />
+        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-20 ${color}`} />
         <div className="flex items-center gap-3 mb-3">
-            <div className={`p-2 rounded-lg ${color} bg-opacity-10`}>{icon}</div>
-            <p className="text-gray-500 text-sm font-medium">{label}</p>
+            <div className={`p-2 rounded-lg ${color} bg-opacity-20`}>{icon}</div>
+            <p className="text-slate-400 text-sm font-medium">{label}</p>
         </div>
-        <p className="text-3xl font-bold text-gray-800">{value}</p>
+        <p className="text-3xl font-bold text-white">{value}</p>
     </motion.div>
 );
 
@@ -46,7 +46,7 @@ export default function Dashboard() {
 
     return (
         <div>
-            <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-3xl font-bold text-gray-800 mb-8">
+            <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-3xl font-bold text-white mb-8">
                 Dashboard Overview
             </motion.h1>
 
@@ -65,13 +65,13 @@ export default function Dashboard() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: "easeOut", delay: 0.8 }} className="bg-white p-6 rounded-lg border border-elite-border shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Monthly Revenue</h3>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: "easeOut", delay: 0.8 }} className="bg-slate-800/80 backdrop-blur-sm p-6 rounded-2xl border border-slate-700/50">
+                    <h3 className="text-lg font-semibold text-white mb-4">Monthly Revenue</h3>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={monthlyData}>
-                            <XAxis dataKey="name" stroke="#6b7280" />
-                            <YAxis stroke="#6b7280" />
-                            <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 8, color: '#1f2937' }} />
+                            <XAxis dataKey="name" stroke="#94a3b8" />
+                            <YAxis stroke="#94a3b8" />
+                            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 8, color: '#fff' }} />
                             <Bar dataKey="revenue" fill="url(#colorGradient)" radius={[8, 8, 0, 0]} />
                             <defs>
                                 <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
@@ -83,14 +83,14 @@ export default function Dashboard() {
                     </ResponsiveContainer>
                 </motion.div>
 
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: "easeOut", delay: 1.0 }} className="bg-white p-6 rounded-lg border border-elite-border shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Order Status</h3>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: "easeOut", delay: 1.0 }} className="bg-slate-800/80 backdrop-blur-sm p-6 rounded-2xl border border-slate-700/50">
+                    <h3 className="text-lg font-semibold text-white mb-4">Order Status</h3>
                     <ResponsiveContainer width="100%" height={300}>
                         <PieChart>
                             <Pie data={orderData} cx="50%" cy="50%" outerRadius={100} innerRadius={60} paddingAngle={5} dataKey="value" label>
                                 {orderData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                             </Pie>
-                            <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: 8, color: '#1f2937' }} />
+                            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 8, color: '#fff' }} />
                             <Legend />
                         </PieChart>
                     </ResponsiveContainer>
@@ -98,16 +98,16 @@ export default function Dashboard() {
             </div>
 
             {stats?.lowStockProducts?.length > 0 && (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: "easeOut", delay: 1.2 }} className="bg-red-50 p-6 rounded-lg border border-red-200">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: "easeOut", delay: 1.2 }} className="bg-red-900/20 backdrop-blur-sm p-6 rounded-2xl border border-red-700/50">
                     <div className="flex items-center gap-2 mb-4">
-                        <AlertTriangle className="text-red-500" size={20} />
-                        <h3 className="text-lg font-semibold text-red-700">Low Stock Alerts</h3>
+                        <AlertTriangle className="text-red-400" size={20} />
+                        <h3 className="text-lg font-semibold text-red-300">Low Stock Alerts</h3>
                     </div>
                     <div className="space-y-2">
                         {stats.lowStockProducts.map(p => (
-                            <div key={p._id} className="flex justify-between items-center bg-white p-3 rounded border border-red-100 shadow-sm">
-                                <span className="text-gray-800 font-medium">{p.productName} <span className="text-gray-500 text-sm">({p.sku})</span></span>
-                                <span className="text-red-600 font-bold">{p.currentStock} / {p.minimumStock} min</span>
+                            <div key={p._id} className="flex justify-between items-center bg-slate-800/60 p-3 rounded-lg">
+                                <span className="text-white font-medium">{p.productName} <span className="text-slate-400 text-sm">({p.sku})</span></span>
+                                <span className="text-red-400 font-bold">{p.currentStock} / {p.minimumStock} min</span>
                             </div>
                         ))}
                     </div>

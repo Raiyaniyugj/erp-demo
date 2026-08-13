@@ -4,7 +4,6 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../services/firebase';
-import Strands from '../components/Strands/Strands';
 
 export default function Login() {
     const [isLogin, setIsLogin] = useState(true);
@@ -47,20 +46,17 @@ export default function Login() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-900 relative overflow-hidden">
-            {/* Animated Strands Background */}
-            <div className="absolute inset-0 z-0">
-                <Strands 
-                    colors={["#FF4242", "#7C3AED", "#06B6D4", "#EAB308"]}
-                    count={5}
-                    speed={0.4}
-                    amplitude={1.2}
-                    waviness={1.5}
-                    thickness={0.8}
-                    glow={2.8}
-                    intensity={0.7}
-                    glass={false}
-                />
-            </div>
+            {/* Animated background blobs */}
+            <motion.div 
+                animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }} 
+                transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
+            />
+            <motion.div 
+                animate={{ scale: [1, 1.5, 1], rotate: [0, -90, 0] }} 
+                transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
+            />
 
             <motion.div 
                 initial={{ opacity: 0, y: 50 }}

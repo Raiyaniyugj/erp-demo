@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Layout from '../layouts/MainLayout';
+import Landing from '../pages/Landing';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import Customers from '../pages/Customers';
@@ -11,7 +12,6 @@ import Invoices from '../pages/Invoices';
 import Payments from '../pages/Payments';
 import ActivityTimeline from '../pages/ActivityTimeline';
 import Reports from '../pages/Reports';
-
 import Profile from '../pages/Profile';
 
 function ProtectedRoute({ children, allowedRoles }) {
@@ -27,6 +27,7 @@ const Wrap = ({ children }) => (
 );
 
 const routes = [
+    { path: '/', element: <Landing /> },
     { path: '/login', element: <Login /> },
     { path: '/dashboard', element: <Wrap><Dashboard /></Wrap> },
     { path: '/profile', element: <Wrap><Profile /></Wrap> },
@@ -38,7 +39,7 @@ const routes = [
     { path: '/payments', element: <Wrap><Payments /></Wrap> },
     { path: '/activity', element: <Wrap><ActivityTimeline /></Wrap> },
     { path: '/reports', element: <Wrap><Reports /></Wrap> },
-    { path: '*', element: <Navigate to="/login" /> },
+    { path: '*', element: <Navigate to="/" /> },
 ];
 
 export default routes;

@@ -7,20 +7,20 @@ export default function MainLayout({ children }) {
     const { user, logout } = useAuth();
 
     return (
-        <div className="flex min-h-screen bg-elite-bg text-elite-text">
+        <div className="flex min-h-screen bg-slate-800 text-slate-100">
             <Sidebar />
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
                 {/* Header Section */}
-                <header className="h-16 border-b border-elite-border bg-white flex items-center justify-end px-8 shrink-0 shadow-sm">
+                <header className="h-16 border-b border-slate-700 bg-slate-900 flex items-center justify-end px-8 shrink-0">
                     <div className="flex items-center gap-4">
                         <div className="text-right">
-                            <p className="text-sm font-semibold text-gray-800">{user?.name}</p>
-                            <p className="text-xs text-gray-500">{user?.role}</p>
+                            <p className="text-sm font-medium text-slate-200">{user?.name}</p>
+                            <p className="text-xs text-slate-400">{user?.role}</p>
                         </div>
-                        <div className="h-8 w-px bg-gray-300 mx-2"></div>
+                        <div className="h-8 w-px bg-slate-700 mx-2"></div>
                         <Link 
                             to="/profile" 
-                            className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors cursor-pointer text-gray-600 hover:text-elite-info"
+                            className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-colors cursor-pointer text-slate-300 hover:text-white"
                             title="Profile"
                         >
                             <User size={20} />
