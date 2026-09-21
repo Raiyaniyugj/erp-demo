@@ -4,7 +4,7 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../services/firebase';
-import Strands from '../components/Strands/Strands';
+import DotField from '../components/DotField/DotField';
 
 export default function Login() {
     const [isLogin, setIsLogin] = useState(true);
@@ -47,18 +47,18 @@ export default function Login() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-900 relative overflow-hidden">
-            {/* Animated Strands Background */}
+            {/* Animated DotField Background */}
             <div className="absolute inset-0 z-0">
-                <Strands 
-                    colors={["#FF4242", "#7C3AED", "#06B6D4", "#EAB308"]}
-                    count={5}
-                    speed={0.4}
-                    amplitude={1.2}
-                    waviness={1.5}
-                    thickness={0.8}
-                    glow={2.8}
-                    intensity={0.7}
-                    glass={false}
+                <DotField 
+                    dotRadius={1.5}
+                    dotSpacing={14}
+                    bulgeStrength={67}
+                    glowRadius={160}
+                    sparkle={false}
+                    waveAmplitude={0}
+                    gradientFrom="rgba(168, 85, 247, 0.4)"
+                    gradientTo="rgba(99, 102, 241, 0.3)"
+                    glowColor="rgba(147, 51, 234, 0.35)"
                 />
             </div>
 
